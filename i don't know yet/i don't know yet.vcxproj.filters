@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{aa8fc11d-9784-4166-9c8f-a0555fd283f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tools">
+      <UniqueIdentifier>{44430b4e-9b2a-47aa-8206-a15690f4d89b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="drawable">
+      <UniqueIdentifier>{dc559bb8-564f-48b4-9ea3-e60a5e9cdcf4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Window.h">
@@ -30,11 +39,44 @@
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\drawable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\light.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_dx11.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_win32.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\FrustumCull.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Console.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\drawable.h">
+      <Filter>drawable</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Mesh.h">
+      <Filter>drawable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +98,38 @@
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\drawable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\light.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_dx11.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_win32.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\FrustumCull.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Console.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\drawable.cpp">
+      <Filter>drawable</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Mesh.cpp">
+      <Filter>drawable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

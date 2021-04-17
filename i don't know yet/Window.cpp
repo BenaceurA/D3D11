@@ -22,8 +22,13 @@ LRESULT Window::handleMsgSetup(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 	return pWnd->handleMsg(hwnd, uMsg, wParam, lParam);
 }
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT Window::handleMsg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam))
+		return true;
+
 	switch (uMsg) {
 	case WM_CLOSE:
 		_windowShouldClose = true;

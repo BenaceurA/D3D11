@@ -1,6 +1,4 @@
 #pragma once
-
-
 #include "Graphics.h"
 #include "Window.h"
 
@@ -11,7 +9,7 @@ public:
 	Game(HINSTANCE HINST);
 	void initGraphics();
 	void UpdateFrame();
-	void DrawFrame();
+	void DrawFrame(double ft);
 	bool windowShouldClose();
 	void cleanUp();
 	~Game();

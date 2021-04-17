@@ -15,10 +15,13 @@
 #include <assimp/postprocess.h>
 #include <iostream>
 #include <wrl.h>
-
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 #include "Camera.h"
 #include "drawable.h"
 #include "light.h"
+#include "FrustumCull.h"
 
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib,"D3DCompiler.lib")
@@ -42,8 +45,22 @@
 class Graphics
 {
 public:
+	void InitD3D(HWND hWnd);     
+	void CleanD3D(); 
+	void renderframe(float yoffset, bool moveforward,bool movebackward, bool nz, bool pz, bool nx, bool px);
+	void clearRenderTarget();
+	void Present();
+	void initPipeline();
+	void initGraphics();
+	DirectX::XMVECTOR mPosition = { 0.0f,0.0f,-1.0f };
+private:
 	
-private:	
+	/*Drawable house { "cottage_obj.obj",devcon,dev,view,projection };*/
+	Drawable Suzan { "monkey.obj",devcon,dev,view,projection };
+	Light light { "light.obj",devcon,dev,view,projection ,{},{4.0f,0.0f,0.0f } };
+	Drawable* p = &light;
+
+private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				swapchain;
 	Microsoft::WRL::ComPtr<ID3D11Device>				dev;
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext>			devcon;
@@ -54,35 +71,14 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout>			pLayout;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState>		pDSState;
 	Microsoft::WRL::ComPtr<ID3D11Texture2D>				pDepthStencil;
-	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		pDSV;	
-	
-	
-	
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>		pDSV;
 
 private:
 
 	Camera cam;
 	XMMATRIX view;
-	XMMATRIX projection = XMMatrixPerspectiveLH(0.1f, 0.1f*((float)SCREEN_HEIGHT / (float)SCREEN_WIDTH), 0.1f, 50.0f);
+	XMMATRIX projection = XMMatrixPerspectiveLH(0.1f, 0.1f*((float)SCREEN_HEIGHT / (float)SCREEN_WIDTH), 0.1f, 100.0f);
+	FrustumCull frustumCull{ view,projection };
 
-
-public:
-	void InitD3D(HWND hWnd);     
-	void CleanD3D(); 
-	void renderframe(float yoffset, bool moveforward,bool movebackward, bool nz, bool pz, bool nx, bool px);
-	void clearRenderTarget();
-	void Present();
-	void initPipeline();
-	void initGraphics();
-	DirectX::XMVECTOR mPosition = { 0.0f,0.0f,-1.0f };
-
-public:
-	Graphics();
-	~Graphics();
-private:
-	
-	Drawable Suzan { "monkey.obj",devcon,dev,view,projection };
-	Light light { "light.obj",devcon,dev,view,projection ,{},{4.0f,0.0f,0.0f } };
-	
 };
 

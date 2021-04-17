@@ -20,21 +20,41 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Camera.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Console.h" />
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\drawable.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\FrustumCull.h" />
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Game.h" />
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Graphics.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imconfig.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_dx11.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imgui_internal.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imstb_rectpack.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imstb_textedit.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\imstb_truetype.h" />
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Keyboard.h" />
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\light.h" />
+    <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Mesh.h" />
     <ClInclude Include="..\..\i don%27t know yet\i don%27t know yet\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Camera.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Console.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\drawable.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\FrustumCull.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Game.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Graphics.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_demo.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_draw.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\imgui_widgets.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Keyboard.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\light.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Main.cpp" />
+    <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Mesh.cpp" />
     <ClCompile Include="..\..\i don%27t know yet\i don%27t know yet\Window.cpp" />
   </ItemGroup>
   <ItemGroup>

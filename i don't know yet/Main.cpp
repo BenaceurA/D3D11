@@ -3,35 +3,43 @@
 #include <iostream>
 #include <exception>
 #include <comdef.h>
+#include "Console.h"
+#include <chrono>
+
+void run() {
+
+}
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
-	
-	AllocConsole();
-	FILE *fDummy;
-	freopen_s(&fDummy, "CONIN$", "r", stdin);
-	freopen_s(&fDummy, "CONOUT$", "w", stderr);
-	freopen_s(&fDummy, "CONOUT$", "w", stdout);
+	Console::OpenConsole();
+	const double FPS = 60.0;
+	double currFps = 0.0;
+	double frameDelay = 1000.0 / FPS;
+	std::chrono::time_point<std::chrono::steady_clock> Timer;
+	std::chrono::duration<double, std::milli> frameTime;
+
 	try {
 		Game game(hInstance);
-		game.initGraphics();
 
-		int FPS = 60;
-		float frameDelay = 1000.0f / FPS;
-		float framestart;
-		float frametime;
+		Timer = std::chrono::steady_clock::now();
+
 		while (!game.windowShouldClose())
-		{
-			framestart = (float)GetTickCount();
+		{	
+			if (frameTime.count() >= frameDelay)
+			{
+				Timer = std::chrono::steady_clock::now();
+				currFps = 1000.0 / frameTime.count();
 
-			game.UpdateFrame();
-			game.DrawFrame();
+				game.UpdateFrame();
+				game.DrawFrame(currFps);
 
-			frametime = GetTickCount() - framestart;
-			
-			if (frameDelay > frametime) {
-				Sleep((DWORD)(frameDelay - frametime));
+				std::cout << frameTime.count() << std::endl;
+				frameTime.zero();
 			}
-		}
+
+			frameTime = std::chrono::steady_clock::now() - Timer;
+		}	
 		game.cleanUp();
 	}
 	catch (std::exception &e) {
@@ -44,8 +52,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 		std::cerr << errMsg;
 		system("PAUSE");
 	}
-	catch (...) {		
-		std::cerr << "tnaket";
+	catch (...) {
+		std::cerr << "panic";
 	}
 	return 0;
 	

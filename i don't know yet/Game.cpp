@@ -7,7 +7,7 @@ Game::Game(HINSTANCE HINST)
 	:
 	wnd(HINST,"hello")
 {
-
+	initGraphics();
 }
 
 void Game::initGraphics()
@@ -80,11 +80,23 @@ void Game::UpdateFrame()
 		}
 }
 
-void Game::DrawFrame()
+void Game::DrawFrame(double ft)
 {
-	gfx.clearRenderTarget();	
-	
+	gfx.clearRenderTarget();
+
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
 	gfx.renderframe(yoffset, moveforward,movebackward,light_nz,light_pz, light_nx, light_px);
+	
+	
+	ImGui::Begin("FPS",(bool*)1);
+	ImGui::Text("%f",ft);
+	ImGui::End();
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 	gfx.Present();
 	wnd.Show();
 	

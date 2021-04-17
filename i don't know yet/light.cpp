@@ -29,11 +29,15 @@ void Light::setLightConstantBuffer()
 		throw hr;
 	};
 
-	pdevcon->PSSetConstantBuffers(0, 1, pLightBuffer.GetAddressOf());
+	pdevcon->PSSetConstantBuffers(0, 1, pLightBuffer.GetAddressOf());	
 }
 
 void Light::updateLightConstantBuffer()
 {
+	lightcb.color.x = color[0];
+	lightcb.color.y = color[1];
+	lightcb.color.z = color[2];
+
 	D3D11_MAPPED_SUBRESOURCE s;
 	pdevcon->Map(pLightBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &s);
 	memcpy(s.pData, &lightcb, sizeof(lightcb));
@@ -48,8 +52,9 @@ size_t Light::Draw()
 	this->setIndexBuffer();
 	this->updateConstantBuffer(view, projection);
 	this->updateLightConstantBuffer();
-	pdevcon->DrawIndexed(mesh.indices.size(), 0, 0);
-	return this->mesh.vertices.size();
+	pdevcon->DrawIndexed(mesh.getIndicesSize(), 0, 0);
+	
+	return this->mesh.getVerticesSize();
 }
 
 void Light::moveForward(float speed)

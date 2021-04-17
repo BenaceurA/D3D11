@@ -7,14 +7,16 @@ struct PS_IN
 };
 cbuffer pcb
 {
-    float3 lightpos;    
+    float3 lightpos;
+    float padding;
+    float3 _color;
 };
 float4 main(PS_IN input) : SV_Target
 {
     float ambientStrength = 0.1f;
     float3 ambientColor = { 0.8f, 0.8f, 0.8f };
     float3 diffuseStrength = 1.2f;
-    float3 diffuseColor = { 0.8f, 0.8f, 0.8f };
+    float3 diffuseColor = _color;
     float k1 = 1.0f;
     float k2 = 0.045f;
     float k3 = 0.0075f;

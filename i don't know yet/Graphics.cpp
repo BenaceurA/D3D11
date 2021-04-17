@@ -1,16 +1,5 @@
 #include "Graphics.h"
 
-
-
-Graphics::Graphics()
-{
-}
-
-
-Graphics::~Graphics()
-{
-}
-
 void Graphics::InitD3D(HWND hWnd)
 {
 	
@@ -112,7 +101,13 @@ void Graphics::InitD3D(HWND hWnd)
 	//set the render target as the back buffer
 	devcon->OMSetRenderTargets(1, backbuffer.GetAddressOf(), pDSV.Get());
 
-	
+	//init imgui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(dev.Get(), devcon.Get());
+
 }
 
 void Graphics::CleanD3D(void)
@@ -123,9 +118,8 @@ void Graphics::CleanD3D(void)
 
 void Graphics::renderframe(float yoffset, bool moveforward, bool movebackward, bool nz,bool pz, bool nx, bool px)
 {
+	//camera
 	cam.rotateCamera(0.0f, yoffset+ 3.14159f, 0.0f);
-	
-
 	if (moveforward)
 	{
 		cam.moveForward(0.05f);
@@ -134,9 +128,9 @@ void Graphics::renderframe(float yoffset, bool moveforward, bool movebackward, b
 	{
 		cam.moveBackward(0.05f);
 	}
-
 	view = cam.updateViewMatrix();
 	
+
 	if (pz)
 	{
 		light.moveForward(0.05);
@@ -155,13 +149,37 @@ void Graphics::renderframe(float yoffset, bool moveforward, bool movebackward, b
 	}
 	
 	UINT total = 0;
+
+	//frustumcull
+	frustumCull.extractFrustum();
 	
-	devcon->PSSetShader(pLPS.Get(), 0, 0);
+	devcon->PSSetShader(pLPS.Get(), 0, 0);	
 	total += light.Draw();
 
 	devcon->PSSetShader(pPS.Get(), 0, 0);
 	total += Suzan.Draw();
-	std::cout << total << std::endl;
+
+	{
+		XMFLOAT3 r = Suzan.GetRotation();
+		XMFLOAT3 p;
+		DirectX::XMStoreFloat3(&p, Suzan.GetPosition());
+		
+		ImGui::Begin("test?");
+		ImGui::Text("vertices : %d", total);
+		ImGui::Checkbox("Draw Mesh", &Suzan.drawMesh);
+		ImGui::Checkbox("Draw HitBox", &Suzan.drawBox);
+
+		ImGui::SliderFloat("X rot", &r.x, 0.0f, 6.282f);
+		ImGui::SliderFloat("X pos", &p.x, 0.0f, 10.0f);
+
+		ImGui::ColorPicker3("light color", light.color);
+		ImGui::End();
+
+
+		Suzan.SetRotation({ r.x,0.0f,0.0f });
+		Suzan.SetPosition({ p.x,0.0f,0.0f });
+		
+	}
 }
 
 void Graphics::clearRenderTarget()
@@ -201,17 +219,11 @@ void Graphics::initPipeline()
 	};
 
 	dev->CreateInputLayout(ied, ied_size, VS->GetBufferPointer(), VS->GetBufferSize(), &pLayout);
-	devcon->IASetInputLayout(pLayout.Get());
-
-
-
-	
+	devcon->IASetInputLayout(pLayout.Get());	
 }
 
 void Graphics::initGraphics()
 {
-	
-		
 	
 }
 

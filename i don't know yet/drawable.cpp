@@ -1,4 +1,5 @@
 #include "drawable.h"
+#include "Mesh.h"
 
 
 Drawable::Drawable(const char* file,Microsoft::WRL::ComPtr<ID3D11DeviceContext> & pdevcon, Microsoft::WRL::ComPtr<ID3D11Device> & pdev,XMMATRIX& view, XMMATRIX& proj)
@@ -6,11 +7,9 @@ Drawable::Drawable(const char* file,Microsoft::WRL::ComPtr<ID3D11DeviceContext> 
 	pdevcon(pdevcon),
 	pdev(pdev),
 	view(view),
-	projection(proj)
+	projection(proj),
+	mesh(file, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices)
 {
-	if (!this->loadMesh(file, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices)) {
-		throw std::runtime_error("failed to load mesh");
-	};
 }
 
 Drawable::Drawable(const char* file,Microsoft::WRL::ComPtr<ID3D11DeviceContext> & pdevcon, Microsoft::WRL::ComPtr<ID3D11Device> & pdev, XMMATRIX& view, XMMATRIX& proj, XMFLOAT3 rot, XMVECTOR pos)
@@ -20,16 +19,9 @@ Drawable::Drawable(const char* file,Microsoft::WRL::ComPtr<ID3D11DeviceContext> 
 	view(view),
 	projection(proj),
 	rot( rot),
-	pos( pos)
-{
-	if (!this->loadMesh(file, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices)) {
-		throw std::runtime_error("failed to load mesh");
-	};
-}
-
-bool Drawable::loadMesh(const char * filename, unsigned int flags)
-{
-	return mesh.importfile(filename, flags);
+	pos( pos),
+	mesh(file, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices)
+{	
 }
 
 void Drawable::setConstantBuffer()
@@ -52,7 +44,7 @@ void Drawable::setVertexBuffer()
 {
 	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DYNAMIC;
-	bd.ByteWidth = this->getVerticesByteSize();
+	bd.ByteWidth = mesh.getVerticesByteSize();
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -60,10 +52,10 @@ void Drawable::setVertexBuffer()
 
 	D3D11_MAPPED_SUBRESOURCE ms;
 	pdevcon->Map(pVertexBuffer.Get(), NULL, D3D11_MAP_WRITE_DISCARD, NULL, &ms);
-	memcpy(ms.pData,getVerticesAdresse(), getVerticesByteSize());
+	memcpy(ms.pData,mesh.getVerticesAddr(), mesh.getVerticesByteSize());
 	pdevcon->Unmap(pVertexBuffer.Get(), NULL);
 
-	UINT stride = sizeof(Drawable::Vertex);
+	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
 	pdevcon->IASetVertexBuffers(0, 1, pVertexBuffer.GetAddressOf(), &stride, &offset);
@@ -73,13 +65,13 @@ void Drawable::setIndexBuffer()
 {
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = getIndicesByteSize();
+	bufferDesc.ByteWidth = mesh.getIndicesByteSize();
 	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA InitData;
-	InitData.pSysMem = getIndicesAdresse();
+	InitData.pSysMem = mesh.getIndicesAddr();
 	InitData.SysMemPitch = 0;
 	InitData.SysMemSlicePitch = 0;
 
@@ -120,63 +112,27 @@ size_t Drawable::Draw()
 	this->setVertexBuffer();
 	this->setIndexBuffer();
 	this->updateConstantBuffer(view, projection);
-	pdevcon->DrawIndexed(mesh.indices.size(), 0, 0);
-	return this->mesh.vertices.size();
+	pdevcon->DrawIndexed(mesh.getIndicesSize(), 0, 0);
+	
+	return this->mesh.getVerticesSize();
 }
 
-size_t Drawable::getVerticesByteSize()
+void Drawable::SetPosition(XMVECTOR pos)
 {
-	return sizeof(Vertex)*mesh.vertices.size();
+	this->pos = pos;
 }
 
-size_t Drawable::getIndicesByteSize()
+XMVECTOR Drawable::GetPosition()
 {
-	return sizeof(unsigned int)*mesh.indices.size();
+	return pos;
 }
 
-Drawable::Vertex* Drawable::getVerticesAdresse()
+void Drawable::SetRotation(XMFLOAT3 rot)
 {
-	return mesh.vertices.data();
+	this->rot = rot;
 }
 
-unsigned int* Drawable::getIndicesAdresse()
+XMFLOAT3 Drawable::GetRotation()
 {
-	return mesh.indices.data();
-}
-
-bool Drawable::Mesh::importfile(const char * filename, unsigned int flags)
-{
-
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(filename, flags);
-	if (!scene)
-	{
-		return false;
-	}
-	unsigned int numVertices = scene->mMeshes[0]->mNumVertices;
-	vertices.reserve(sizeof(Vertex)*numVertices);
-	for (size_t i = 0; i < numVertices; i++)
-	{
-		vertices.push_back({
-			{
-				scene->mMeshes[0]->mVertices[i].x,
-				scene->mMeshes[0]->mVertices[i].y,
-				scene->mMeshes[0]->mVertices[i].z 
-			},
-			{
-				scene->mMeshes[0]->mNormals[i].x,
-				scene->mMeshes[0]->mNormals[i].y,
-				scene->mMeshes[0]->mNormals[i].z 
-			}
-			});		
-	}
-	unsigned int numFaces = scene->mMeshes[0]->mNumFaces;
-	indices.reserve(sizeof(unsigned int)*numFaces * 3);
-	for (size_t i = 0; i < numFaces; i++)
-	{
-		indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[0]);
-		indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[1]);
-		indices.push_back(scene->mMeshes[0]->mFaces[i].mIndices[2]);
-	}
-	return true;
+	return rot;
 }

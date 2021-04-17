@@ -7,26 +7,21 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <wrl.h>
+#include "Mesh.h"
 
 using namespace DirectX;
 
 class Drawable
 {	
 public:
-	struct Vertex {
-		XMFLOAT3 position; 
-		XMFLOAT3 normal;
-	};
+
 	struct ConstantBuffer {
 		XMMATRIX transform;
 		XMMATRIX world;
 	}cb;
 	
-	Drawable() = delete;
 	Drawable(const char* file,Microsoft::WRL::ComPtr<ID3D11DeviceContext> & pdevcon, Microsoft::WRL::ComPtr<ID3D11Device> & pdev, XMMATRIX& view, XMMATRIX& proj);
 	Drawable(const char* file,Microsoft::WRL::ComPtr<ID3D11DeviceContext> & pdevcon, Microsoft::WRL::ComPtr<ID3D11Device> & pdev, XMMATRIX& view, XMMATRIX& proj,XMFLOAT3 rot, XMVECTOR pos);
-
-	bool loadMesh(const char* filename, unsigned int flags = 0);
 
 	void setConstantBuffer();
 	void setVertexBuffer();
@@ -34,24 +29,18 @@ public:
 	void updateConstantBuffer(XMMATRIX view, XMMATRIX projection);
 
 	virtual size_t Draw();
-	size_t getVerticesByteSize();
-	size_t getIndicesByteSize();
-	Vertex* getVerticesAdresse();
-	unsigned int* getIndicesAdresse();
+	void SetPosition(XMVECTOR pos);
+	XMVECTOR GetPosition();
+	void SetRotation(XMFLOAT3 rot);
+	XMFLOAT3 GetRotation();
 	
+private:
 
-protected:
-
-	class Mesh {
-		friend class Drawable;
-	public:
-		Assimp::Importer importer;
-		bool importfile(const char* filename, unsigned int flags);
-		std::vector<Vertex> vertices;
-		std::vector<unsigned int> indices;
-	}mesh;
+	
 	
 protected:
+
+	Mesh mesh;
 
 	Microsoft::WRL::ComPtr<ID3D11DeviceContext> & pdevcon;
 	Microsoft::WRL::ComPtr<ID3D11Device> & pdev;
@@ -80,6 +69,9 @@ protected:
 	XMVECTOR up;
 	XMVECTOR down;
 
+public:
+	bool drawMesh = true;
+	bool drawBox = false;
 };
 
 

@@ -22,10 +22,7 @@ void Camera::moveBackward(float speed)
 
 void Camera::rotateCamera(float x, float y, float z)
 {
-	CamRotationMatrix = XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);
-	rot.x = x;
-	rot.y = y;
-	rot.z = z;
+	CamRotationMatrix = XMMatrixRotationRollPitchYaw(x, y, z);
 }
 
 XMMATRIX Camera::updateViewMatrix()
