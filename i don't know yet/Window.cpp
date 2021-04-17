@@ -1,10 +1,26 @@
 #include "Window.h"
 
+std::unique_ptr<Window> Window::window = nullptr;
 
+std::unique_ptr<Window>& Window::getInstance()
+{
+	return window;
+}
+
+void Window::initInstance()
+{
+	if (Window::window == nullptr)
+	{
+		Window::window = std::make_unique<Window>();
+	}
+	else
+	{
+		throw std::exception("window instance already exists");
+	}
+}
 
 LRESULT CALLBACK Window::SetupMsgPtr(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	
+{	
 	if (uMsg == WM_NCCREATE) {
 		const CREATESTRUCTW* const pCreate = reinterpret_cast<CREATESTRUCTW*>(lParam);
 		Window* const pWnd = static_cast<Window*>(pCreate->lpCreateParams);
@@ -112,50 +128,6 @@ LRESULT Window::handleMsg(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-Window::Window(HINSTANCE hInstance, LPCSTR t)
-	:
-	hInstance(hInstance)
-{
-	
-	//Register window class
-
-	const auto CLASS_NAME = "class_name";
-	WNDCLASSEX wc = {0};
-
-	wc.cbSize = sizeof(wc);
-	wc.style = CS_OWNDC;
-	wc.lpfnWndProc = SetupMsgPtr;
-	wc.cbClsExtra = 0;
-	wc.cbWndExtra = 0;
-	wc.hInstance = hInstance;
-	wc.hIcon = nullptr;
-	wc.hCursor = nullptr;
-	wc.hbrBackground = nullptr;
-	wc.lpszClassName = CLASS_NAME;
-	wc.hIconSm = nullptr;
-	RegisterClassEx(&wc);
-
-	hwnd = CreateWindowEx(
-		0,                              // Optional window styles.
-		CLASS_NAME,                     // Window class
-		t,    // Window text
-		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,            // Window style
-
-		// Size and position
-		CW_USEDEFAULT, CW_USEDEFAULT, SCREEN_WIDTH, SCREEN_HEIGHT,
-
-		NULL,       // Parent window    
-		NULL,       // Menu
-		hInstance,  // Instance handle
-		this        // Additional application data
-	);
-
-}
-
-Window::~Window()
-{
-}
-
 void Window::Getmessage() {
 	MSG msg;
 	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE) > 0)
@@ -179,4 +151,48 @@ bool Window::windowShouldClose() {
 	return _windowShouldClose;
 }
 
+void Window::SetHwnd(const HINSTANCE& hinstance)
+{
+	hInstance = hinstance;
+}
+
+void Window::SetName(LPCSTR name)
+{
+	this->name = name;
+}
+
+Window::Window()
+{
+	//Register window class
+	const auto CLASS_NAME = "class_name";
+	WNDCLASSEX wc = { 0 };
+
+	wc.cbSize = sizeof(wc);
+	wc.style = CS_OWNDC;
+	wc.lpfnWndProc = SetupMsgPtr;
+	wc.cbClsExtra = 0;
+	wc.cbWndExtra = 0;
+	wc.hInstance = hInstance;
+	wc.hIcon = nullptr;
+	wc.hCursor = nullptr;
+	wc.hbrBackground = nullptr;
+	wc.lpszClassName = CLASS_NAME;
+	wc.hIconSm = nullptr;
+	RegisterClassEx(&wc);
+
+	hwnd = CreateWindowEx(
+		0,                              // Optional window styles.
+		CLASS_NAME,                     // Window class
+		name,    // Window text
+		WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,            // Window style
+
+		// Size and position
+		CW_USEDEFAULT, CW_USEDEFAULT, SCREEN_WIDTH, SCREEN_HEIGHT,
+
+		NULL,       // Parent window    
+		NULL,       // Menu
+		hInstance,  // Instance handle
+		this        // Additional application data
+	);
+}
 

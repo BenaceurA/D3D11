@@ -1,14 +1,20 @@
 #include "Graphics.h"
 
-void Graphics::InitD3D(HWND hWnd)
+Graphics::Graphics()
 {
-	
+	InitD3D(Window::getInstance()->Gethwnd());
+	initPipeline();
+}
+
+Graphics::~Graphics()
+{
+	CleanD3D();
+}
+
+void Graphics::InitD3D(HWND hWnd)
+{	
 	DXGI_SWAP_CHAIN_DESC scd;
-	
-
 	ZeroMemory(&scd, sizeof(DXGI_SWAP_CHAIN_DESC));
-
-	
 	scd.BufferCount = 1;                                    
 	scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  
 	scd.BufferDesc.Width = SCREEN_WIDTH;
@@ -18,7 +24,6 @@ void Graphics::InitD3D(HWND hWnd)
 	scd.SampleDesc.Count = 1u;                               
 	scd.Windowed = !fullscreen;   
 	scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-
 	
 	if (D3D11CreateDeviceAndSwapChain(NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -38,7 +43,6 @@ void Graphics::InitD3D(HWND hWnd)
 	// Set the viewport
 	D3D11_VIEWPORT viewport;
 	ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.Width = SCREEN_WIDTH;
@@ -96,7 +100,6 @@ void Graphics::InitD3D(HWND hWnd)
 	if (dev->CreateDepthStencilView(pDepthStencil.Get(), &DSV, &pDSV) != S_OK) {
 		throw std::runtime_error("DepthStencilView FAIL!");
 	}
-  
 
 	//set the render target as the back buffer
 	devcon->OMSetRenderTargets(1, backbuffer.GetAddressOf(), pDSV.Get());
@@ -113,73 +116,21 @@ void Graphics::InitD3D(HWND hWnd)
 void Graphics::CleanD3D(void)
 {
 	swapchain->SetFullscreenState(FALSE, NULL);
-
 }
 
-void Graphics::renderframe(float yoffset, bool moveforward, bool movebackward, bool nz,bool pz, bool nx, bool px)
+void Graphics::renderframe()
 {
+	clearRenderTarget();
+
 	//camera
-	cam.rotateCamera(0.0f, yoffset+ 3.14159f, 0.0f);
-	if (moveforward)
-	{
-		cam.moveForward(0.05f);
-	}
-	else if (movebackward)
-	{
-		cam.moveBackward(0.05f);
-	}
+	cam.rotateCamera(0.0f, 0.0f, 0.0f);
 	view = cam.updateViewMatrix();
 	
 
-	if (pz)
-	{
-		light.moveForward(0.05);
-	}
-	if (nz)
-	{
-		light.moveBackward(0.05);
-	}
-	if (px)
-	{
-		light.moveRight(0.05);
-	}
-	if (nx)
-	{
-		light.moveLeft(0.05);
-	}
-	
-	UINT total = 0;
-
-	//frustumcull
-	frustumCull.extractFrustum();
-	
-	devcon->PSSetShader(pLPS.Get(), 0, 0);	
-	total += light.Draw();
-
 	devcon->PSSetShader(pPS.Get(), 0, 0);
-	total += Suzan.Draw();
+	Suzan.Draw();
 
-	{
-		XMFLOAT3 r = Suzan.GetRotation();
-		XMFLOAT3 p;
-		DirectX::XMStoreFloat3(&p, Suzan.GetPosition());
-		
-		ImGui::Begin("test?");
-		ImGui::Text("vertices : %d", total);
-		ImGui::Checkbox("Draw Mesh", &Suzan.drawMesh);
-		ImGui::Checkbox("Draw HitBox", &Suzan.drawBox);
-
-		ImGui::SliderFloat("X rot", &r.x, 0.0f, 6.282f);
-		ImGui::SliderFloat("X pos", &p.x, 0.0f, 10.0f);
-
-		ImGui::ColorPicker3("light color", light.color);
-		ImGui::End();
-
-
-		Suzan.SetRotation({ r.x,0.0f,0.0f });
-		Suzan.SetPosition({ p.x,0.0f,0.0f });
-		
-	}
+	Present();
 }
 
 void Graphics::clearRenderTarget()
@@ -195,8 +146,7 @@ void Graphics::Present()
 }
 
 void Graphics::initPipeline()
-{
-	
+{	
 	ID3DBlob *VS, *PS ,*LPS;
 	
 	D3DCompileFromFile(L"VertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &VS, nullptr);
@@ -222,9 +172,20 @@ void Graphics::initPipeline()
 	devcon->IASetInputLayout(pLayout.Get());	
 }
 
-void Graphics::initGraphics()
+std::unique_ptr<Graphics>& Graphics::getInstance()
 {
-	
+	return graphics;
 }
 
+void Graphics::initInstance()
+{
+	if (Graphics::graphics == nullptr) {
+		Graphics::graphics = std::make_unique<Graphics>();
+	}
+	else
+	{
+		throw std::exception("graphic instance already exists");
+	}
+}
 
+std::unique_ptr<Graphics> Graphics::graphics = nullptr;

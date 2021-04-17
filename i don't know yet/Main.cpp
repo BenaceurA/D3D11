@@ -6,12 +6,19 @@
 #include "Console.h"
 #include <chrono>
 
-void run() {
-
+void initInstances() {
+	/* Order is important */
+	Window::initInstance(); 
+	Graphics::initInstance();
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
+	initInstances();
+
+	Window::getInstance()->SetHwnd(hInstance);
+	Window::getInstance()->SetName("WindowName");
+
 	Console::OpenConsole();
 	const double FPS = 60.0;
 	double currFps = 0.0;
@@ -20,7 +27,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow
 	std::chrono::duration<double, std::milli> frameTime;
 
 	try {
-		Game game(hInstance);
+		Game game;
 
 		Timer = std::chrono::steady_clock::now();
 

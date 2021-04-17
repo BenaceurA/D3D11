@@ -16,7 +16,7 @@ public:
 	void rotateCamera(float x, float y, float z);
 	XMMATRIX updateViewMatrix();
 private:
-	XMVECTOR pos = { 0.0f,0.0f,3.0f };
+	XMVECTOR pos = { 0.0f,0.0f,-5.0f };
 	XMVECTOR target;
 	XMFLOAT3 rot;		
 

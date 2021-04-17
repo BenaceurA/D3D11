@@ -22,6 +22,8 @@
 #include "drawable.h"
 #include "light.h"
 #include "FrustumCull.h"
+#include <memory>
+#include "Window.h"
 
 #pragma comment (lib, "d3d11.lib")
 #pragma comment (lib,"D3DCompiler.lib")
@@ -42,23 +44,25 @@
 #else
 #define DEVICE_DEBUG NULL
 #endif
+
 class Graphics
 {
 public:
+	Graphics();
+	~Graphics();
 	void InitD3D(HWND hWnd);     
 	void CleanD3D(); 
-	void renderframe(float yoffset, bool moveforward,bool movebackward, bool nz, bool pz, bool nx, bool px);
+	void renderframe();
 	void clearRenderTarget();
 	void Present();
 	void initPipeline();
-	void initGraphics();
 	DirectX::XMVECTOR mPosition = { 0.0f,0.0f,-1.0f };
-private:
-	
-	/*Drawable house { "cottage_obj.obj",devcon,dev,view,projection };*/
+
+	static std::unique_ptr<Graphics>& getInstance();
+	static void initInstance();
+private:	
+	static std::unique_ptr<Graphics> graphics;
 	Drawable Suzan { "monkey.obj",devcon,dev,view,projection };
-	Light light { "light.obj",devcon,dev,view,projection ,{},{4.0f,0.0f,0.0f } };
-	Drawable* p = &light;
 
 private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				swapchain;
